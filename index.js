@@ -1,26 +1,20 @@
-import cors from 'cors'
 import express from "express";
-import mongoose from 'mongoose';
-import router from './router.js';
-import bodyparser from 'body-parser';
-const port = 4000;
+import dotenv from "dotenv";
+import cors from "cors";
+import router from "./router.js";
+import MongoDB from "./config/mongoose.js";
+dotenv.config();
+const port = parseInt(process.env.PORT) || 3000;
 const app = express();
 app.use(express.json());
+//User routes from router js file
 app.use("/", cors(), router);
-mongoose.connect("mongodb://localhost:27017/Insta_DB");
-
-export const userSchema = new mongoose.Schema({
-    firstName: String,
-    lastName: String,
-    age: Number,
-    username: String,
-    password: String
-},
-    { timestamps: true }
-);
-
-const userModel = new mongoose.model('Users', userSchema);
-app.listen(port, (req, res) => {
-    console.log("Port is running on:", port);
-})
-export default userModel
+//Welcome endpoint
+app.get("/welcome", (req, res) => {
+  res.send("Welcome to Insta__Node Application");
+});
+MongoDB.connect(process.env.DB_NAME);
+//Listen
+app.listen(port, async () => {
+  console.log(` Insta Node is running on :${port}`);
+});

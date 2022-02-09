@@ -1,7 +1,6 @@
-import userController from "./user.controller.js";
-const userData = new userController();
+import UserController from "./user.controller.js";
+const userData = new UserController();
 async function userRotes(router) {
-    router.post("/api/user/create", userData.userSignup);
-    router.post("/api/create", userData.create)
+  router.post("/api/user/singup", userData.userSignup);
 }
-export default userRotes
+export default userRotes;
