@@ -28,4 +28,27 @@ export default class UserController {
       response.status(httpStatusCode.INTERNAL_SERVER_ERROR).send(error.message);
     }
   }
+  //To find all queries in the database
+  async findall(request, response) {
+    try {
+      const user = await UserModel.find();
+      if (user) {
+        response.status(httpStatusCode.OK).send(user)
+      }
+    } catch (error) {
+      response.status(httpStatusCode.INTERNAL_SERVER_ERROR).send(error)
+    }
+  }
+  //Finding the data by using the default:_Id in database
+  async findById(request, response) {
+    try {
+      const user = await UserModel.findById(request.params._id)
+      console.log(user);
+      if (user) {
+        response.status(httpStatusCode.OK).send(user);
+      }
+    } catch (error) {
+      response.status(httpStatusCode.OK).send(error)
+    }
+  }
 }
