@@ -32,23 +32,33 @@ export default class UserController {
   async allUsers(request, response) {
     try {
       const user = await UserModel.find();
-      if (user) {
+      if (user.length > 0) {
         response.status(httpStatusCode.OK).send(user)
       }
+      else {
+        return response
+          .status(httpStatusCode.INTERNAL_SERVER_ERROR)
+          .send({ message: "Users not found" });
+      }
     } catch (error) {
-      response.status(httpStatusCode.INTERNAL_SERVER_ERROR).send(error)
+      response.status(httpStatusCode.INTERNAL_SERVER_ERROR).send(error.message)
     }
   }
   //Finding the data by using the default:_Id in database
-  async user(request, response) {
+  async userDetailsById(request, response) {
     try {
       const user = await UserModel.findById(request.params._id)
-      console.log(user);
       if (user) {
         response.status(httpStatusCode.OK).send(user);
       }
+      else {
+        console.log(user);
+        return response
+          .status(httpStatusCode.INTERNAL_SERVER_ERROR)
+          .send({ message: "User not found" });
+      }
     } catch (error) {
-      response.status(httpStatusCode.OK).send(error)
+      response.status(httpStatusCode.OK).send(error.message)
     }
   }
   async userLogin(request, response) {
