@@ -61,35 +61,33 @@ export default class UserController {
       response.status(httpStatusCode.OK).send(error.message)
     }
   }
+  //Login User
   async userLogin(request, response) {
     try {
-      //Step:1 finding the existing User by using user
+      //Check whether thr user is already exits or not
       let user = await UserModel.findOne({
         username: request.body.username
       });
-      if (!user)
+
+      //If not exists send error message
+      if (!user) {
         return response
           .status(httpStatusCode.INTERNAL_SERVER_ERROR)
-          .send({ message: "Enter a valid Username" });
+          .send({ message: "Enter a valid username" });
+      }
+      //Check if the user entered a valid password or not 
+      let passwordStatus = await comparePassword(request.body.password, user.password);
 
-      //Compare password
-      let passwordStatus = await comparePassword(
-        request.body.password,
-        user.password
-      );
       if (passwordStatus) {
         delete user.password;
-        return response
-          .status(httpStatusCode.OK)
-          .send({ message: "User Logged in sucessfully", data: user });
+        return response.status(httpStatusCode.OK).send({ data: user });
       }
-      return response
-        .status(httpStatusCode.INTERNAL_SERVER_ERROR)
-        .send({ message: "Please enter a valid password" });
+      //If the user entered a wrong password send error message what it is!
+      else {
+        return response.status(httpStatusCode.INTERNAL_SERVER_ERROR).send({ message: "Enter a valid password" })
+      }
     } catch (error) {
-      response
-        .status(httpStatusCode.INTERNAL_SERVER_ERROR)
-        .send({ message: error.message });
+      return response.status(httpStatusCode.INTERNAL_SERVER_ERROR).send({ message: error.message });
     }
   }
 }
