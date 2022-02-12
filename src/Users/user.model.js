@@ -6,7 +6,7 @@ const userSchema = new mongoose.Schema({
   age: Number,
   username: String,
   password: String,
-  isAdmin: false,
+  isAdmin: Boolean,
 });
 //UserModel
 class User {
