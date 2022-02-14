@@ -1,20 +1,22 @@
 import mongoose from "mongoose";
 //User Schema
-const userSchema = new mongoose.Schema({
-  firstName: String,
-  lastName: String,
-  age: Number,
-  username: String,
-  password: String,
-  isAdmin: Boolean,
-},
+const userSchema = new mongoose.Schema(
   {
-    timestamps: true
-  });
+    firstName: String,
+    lastName: String,
+    age: Number,
+    username: String,
+    password: String,
+    isAdmin: Boolean,
+  },
+  {
+    timestamps: true,
+  }
+);
 //UserModel
 class User {
   //You can write some custom/generic function for user model like Create, Update like that
 }
 userSchema.loadClass(User);
 const userModel = new mongoose.model("Users", userSchema);
-export default userModel
+export default userModel;
