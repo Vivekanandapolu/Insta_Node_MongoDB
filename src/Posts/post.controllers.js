@@ -40,7 +40,7 @@ class PostController {
     }
     async updatePost(request, response) {
         try {
-            const post = await PostModel.updateOne({ _id: request.params._id }, { title: "hello" })
+            const post = await PostModel.updateOne({ _id: request.params._id }, { title: "hello", Description: "Hey baby" })
             if (!post) {
                 return response
                     .status(httpStatusCode.INTERNAL_SERVER_ERROR)
@@ -75,6 +75,20 @@ class PostController {
                 return response.status(httpStatusCode.OK).send({ message: "Post deleted sucessfully" });
             }
             return response.status(httpStatusCode.INTERNAL_SERVER_ERROR).send({ message: "Enter a valid _id" });
+        } catch (error) {
+            return response
+                .status(httpStatusCode.INTERNAL_SERVER_ERROR)
+                .send(error.message);
+        }
+    }
+    async usersPostsById(request, response) {
+        try {
+            const userPost = await PostModel.findOne({ _id: request.params._id })
+                .populate({ path: 'user_id', select: ['firstName', 'age'] });
+            if (userPost) {
+                return response.status(httpStatusCode.OK).send({ data: userPost });
+            }
+            return response.status(httpStatusCode.INTERNAL_SERVER_ERROR).send({ message: "Users not found" })
         } catch (error) {
             return response
                 .status(httpStatusCode.INTERNAL_SERVER_ERROR)

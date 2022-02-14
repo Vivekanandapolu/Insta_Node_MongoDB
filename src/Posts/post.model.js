@@ -1,11 +1,10 @@
 import mongoose from "mongoose";
-import Schema from "mongoose";
 const postSchema = new mongoose.Schema(
   {
     title: String,
     Description: String,
     user_id: {
-      type: Schema.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "Users",
     },
   },
