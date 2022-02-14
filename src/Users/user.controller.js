@@ -1,15 +1,15 @@
 import httpStatusCode from "http-status-codes";
 import { isValidEmail, encryptPassword, comparePassword } from "../../uitility.js";
-import UserModel from "./user.model.js";
+import userModel from "./user.model.js";
 export default class UserController {
   async userSignup(request, response) {
     try {
       if (!isValidEmail(request.body.username)) {
-        response
+        return response
           .status(httpStatusCode.INTERNAL_SERVER_ERROR)
           .send("Enter a Valid username");
       }
-      const user = await UserModel.findOne({
+      const user = await userModel.findOne({
         username: request.body.username,
       });
       if (user) {
@@ -20,7 +20,7 @@ export default class UserController {
       if (request.body.password.length > 5) {
         const hashPassword = await encryptPassword(request.body.password);
         request.body.password = hashPassword;
-        await UserModel.create(request.body);
+        await userModel.create(request.body);
         return response
           .status(httpStatusCode.CREATED)
           .send("User registered sucessfully");
@@ -31,14 +31,14 @@ export default class UserController {
     }
     catch (error) {
       console.log(error.message);
-      return response.status(httpStatusCode.INTERNAL_SERVER_ERROR).send(error.message);
+      return response.status(httpStatusCode.INTERNAL_SERVER_ERROR).send({ Error: error.message });
     }
   }
   //To find all queries in the database
   async allUsers(request, response) {
     try {
       //Records will be ordered by the descending order by using the SORT() Method 
-      const user = await UserModel.find({ firstName: request.params.firstName }).sort({ _id: 1 });
+      const user = await userModel.find({ firstName: request.params.firstName }).sort({ _id: 1 });
       if (user.length > 0) {
         return response.status(httpStatusCode.OK).send(user)
       }
@@ -54,7 +54,7 @@ export default class UserController {
   //Finding the data by using the default:_Id in database
   async userDetailsById(request, response) {
     try {
-      const user = await UserModel.findById(request.params._id)
+      const user = await userModel.findById(request.params._id)
       if (user.length == 0) {
         return response
           .status(httpStatusCode.INTERNAL_SERVER_ERROR)
@@ -71,7 +71,7 @@ export default class UserController {
   async userLogin(request, response) {
     try {
       //Check whether thr user is already exits or not
-      let user = await UserModel.findOne({
+      let user = await userModel.findOne({
         username: request.body.username
       });
 
@@ -100,7 +100,7 @@ export default class UserController {
   //Finding the single user by using the firstName in the Params by using the findOne method
   async singleUser(request, response) {
     try {
-      const user = await UserModel.findOne({ firstName: request.params.firstName });
+      const user = await userModel.findOne({ firstName: request.params.firstName });
       console.log(user);
       //If the user entered a wrong firstName send error message what it is!
       if (!user) {
@@ -114,7 +114,7 @@ export default class UserController {
   //Updating existing user by using the updateOne() with the refference of firstName;
   async updatingSingleUser(request, response) {
     try {
-      const user = await UserModel.updateOne({ firstName: request.params.firstName }, { firstName: "Konda Reddy" }, { upsert: true });
+      const user = await userModel.updateOne({ firstName: request.params.firstName }, { firstName: "Reddy" }, { upsert: true });
       if (!user) {
         return response.status(httpStatusCode.INTERNAL_SERVER_ERROR).send({ message: "User not found" });
       }
@@ -126,7 +126,7 @@ export default class UserController {
   //Updating existing user by using the updateOne() with the refference of firstName;
   async updatingAllUsers(request, response) {
     try {
-      const user = await UserModel.updateMany({ firstName: request.params.firstName }, { firstName: "Reddy" });
+      const user = await userModel.updateMany({ firstName: request.params.firstName }, { firstName: "Reddy" });
       if (user.length == 0) {
         throw new Error({ message: "User not found" })
       }
@@ -134,6 +134,17 @@ export default class UserController {
       return response.status(httpStatusCode.OK).send({ data: user });
     } catch (error) {
       return response.status(httpStatusCode.INTERNAL_SERVER_ERROR).send({ message: error.message });
+    }
+  }
+  async destroyAll(request, response) {
+    try {
+      const users = await userModel.deleteMany({ firstName: request.params.firstName });
+      if (users.length == 0) {
+        return response.status(httpStatusCode.INTERNAL_SERVER_ERROR).send({ message: "Users not found" });
+      }
+      return response.status(httpStatusCode.OK).send({ message: "Users deleted sucessfully" });
+    } catch (error) {
+      return response.status(httpStatusCode.INTERNAL_SERVER_ERROR).send(error.message)
     }
   }
 }

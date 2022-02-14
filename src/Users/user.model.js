@@ -7,10 +7,14 @@ const userSchema = new mongoose.Schema({
   username: String,
   password: String,
   isAdmin: Boolean,
-});
+},
+  {
+    timestamps: true
+  });
 //UserModel
 class User {
   //You can write some custom/generic function for user model like Create, Update like that
 }
 userSchema.loadClass(User);
-export default mongoose.model("Users", userSchema);
+const userModel = new mongoose.model("Users", userSchema);
+export default userModel
