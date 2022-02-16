@@ -38,7 +38,7 @@ export default class UserController {
   async allUsers(request, response) {
     try {
       //Records will be ordered by the descending order by using the SORT() Method 
-      const user = await userModel.find({ firstName: request.params.firstName }).sort({ _id: 1 });
+      const user = await userModel.find().sort({ _id: 1 });
       if (user.length > 0) {
         return response.status(httpStatusCode.OK).send(user)
       }
@@ -145,6 +145,19 @@ export default class UserController {
       return response.status(httpStatusCode.OK).send({ message: "Users deleted sucessfully" });
     } catch (error) {
       return response.status(httpStatusCode.INTERNAL_SERVER_ERROR).send(error.message)
+    }
+  }
+  async getAllPostsOfUsers(request, response) {
+    try {
+      const allPostsOfUser = await userModel.findOne({ _id: request.params._id }).populate({ path: 'posts' });
+      if (!allPostsOfUser) {
+        return response.status(httpStatusCode.INTERNAL_SERVER_ERROR).send({ message: "Users not found" });
+      }
+      return response.status(httpStatusCode.OK).send({ data: allPostsOfUser });
+    } catch (error) {
+      return response
+        .status(httpStatusCode.INTERNAL_SERVER_ERROR)
+        .send(error.message);
     }
   }
 }

@@ -6,7 +6,7 @@ async function postRoutes(router) {
   router.get("/api/post/:_id", postController.getPost);
   router.put("/api/post/update/:_id", postController.updatePost);
   router.delete("/api/post/delete/:_id", postController.deletePost);
-  router.get("/api/posts/all", postController.getAllPosts);
+  router.get("/api/posts/all", postController.allPosts);
   router.get("/api/userPost/:_id", postController.usersPostsById)
 }
 export default postRoutes;

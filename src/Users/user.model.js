@@ -7,6 +7,10 @@ const userSchema = new mongoose.Schema(
     age: Number,
     username: String,
     password: String,
+    posts: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Post'
+    }],
     isAdmin: Boolean,
   },
   {

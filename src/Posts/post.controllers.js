@@ -53,7 +53,7 @@ class PostController {
                 .send(error.message);
         }
     }
-    async getAllPosts(request, response) {
+    async allPosts(request, response) {
         try {
             const posts = await PostModel.find();
             if (posts.length == 0) {
